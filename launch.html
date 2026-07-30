@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0D0A06">
+<title>和平鴿智慧體 · 安裝中</title>
+<style>
+body{background:#050402;color:#D4AF6A;font-family:'Noto Sans TC',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}
+h1{font-size:28px;letter-spacing:4px;margin:16px 0 8px}
+p{font-size:14px;color:#6B5A3E;letter-spacing:1px}
+.spinner{width:60px;height:60px;border:2px solid #2A2018;border-top-color:#D4AF6A;border-radius:50%;animation:spin .8s linear infinite;margin:24px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div style="font-size:48px">🕊</div>
+<h1>和平鴿智慧體</h1>
+<p>Peace Dove Intelligence APP</p>
+<div class="spinner"></div>
+<p id="msg">正在載入應用程式…</p>
+<script>
+// Auto-redirect to main app
+window.location.href = './index.html';
+</script>
+</body>
+</html>
