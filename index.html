@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="和平鴿智慧體">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D0A06">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D0A06">
+<title>和平鴿智慧體 · Peace Dove Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════ */
+:root {
+  --gold:     #D4AF6A;
+  --gold-l:   #F0D080;
+  --gold-d:   #8B6914;
+  --gold-dim: #4A3B2A;
+  --gold-bg:  #2C1F0F;
+  --bg0: #050402; --bg1: #0D0A06; --bg2: #111009;
+  --bg3: #171410; --bg4: #1E1810;
+  --line:  #2A2018; --line2: #3A2E1E;
+  --hi:   #E8D5A8; --mid:  #C4A55A;
+  --lo:   #8B7355; --dim:  #6B5A3E; --ghost: #4A3B2A;
+  --green-l: #95D5B2; --green: #2D6A4F;
+  --red-l:   #F1948A; --red:   #922B21;
+  --blue-l:  #85C1E9; --blue:  #1B4F72;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --r: 12px;
+}
+
+/* ═══════════════════════════════════
+   BASE RESET
+═══════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg0);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%,rgba(212,175,106,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 90%,rgba(139,105,20,.05) 0%,transparent 60%);
+}
+input,button,select,textarea { font-family:var(--sans); outline:none; -webkit-appearance:none; border:none; }
+button { cursor:pointer; background:none; }
+input::placeholder { color:var(--ghost); }
+input:focus { outline:none; }
+
+/* ═══════════════════════════════════
+   DEVICE SHELL
+═══════════════════════════════════ */
+.device {
+  width:390px; height:844px;
+  background:linear-gradient(160deg,#1C1408 0%,#100D07 50%,#181208 100%);
+  border-radius:52px;
+  border:1.5px solid var(--gold-dim);
+  box-shadow:
+    0 0 0 .5px rgba(212,175,106,.15),
+    0 40px 120px rgba(0,0,0,.9),
+    inset 0 1px 0 rgba(212,175,106,.12),
+    inset 0 -1px 0 rgba(0,0,0,.5);
+  display:flex; flex-direction:column;
+  overflow:hidden; position:relative;
+}
+.device::before {
+  content:''; position:absolute; left:-3px; top:140px;
+  width:3px; height:70px;
+  background:linear-gradient(180deg,#2A2018,#4A3B2A,#2A2018);
+  border-radius:3px 0 0 3px;
+}
+.device::after {
+  content:''; position:absolute; right:-3px; top:180px;
+  width:3px; height:90px;
+  background:linear-gradient(180deg,#2A2018,#4A3B2A,#2A2018);
+  border-radius:0 3px 3px 0;
+}
+
+/* Notch */
+.notch {
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:120px; height:34px; background:var(--bg0);
+  border-radius:0 0 20px 20px;
+  display:flex; align-items:center; justify-content:center; gap:8px; z-index:200;
+}
+.nc { width:12px; height:12px; border-radius:50%; background:#1A1409; border:1px solid #2A2018; }
+.ns { width:44px; height:5px; background:#1A1409; border-radius:3px; }
+
+/* Status bar */
+.sbar {
+  height:50px; padding:14px 28px 0;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0; position:relative; z-index:100;
+}
+.sbar-time { font-size:15px; font-weight:600; color:var(--hi); letter-spacing:.5px; }
+.sbar-icons { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--mid); }
+
+/* Gold strip */
+.gold-strip {
+  position:absolute; top:0; left:0; right:0; height:2px; z-index:50;
+  background:linear-gradient(90deg,transparent,var(--gold-d),var(--gold-l),var(--gold-d),transparent);
+}
+
+/* Screen */
+.screen { flex:1; position:relative; overflow:hidden; }
+
+/* Home indicator */
+.home-ind { height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.home-ind::after { content:''; width:120px; height:5px; background:rgba(212,175,106,.3); border-radius:3px; }
+
+/* ═══════════════════════════════════
+   PAGE SYSTEM
+═══════════════════════════════════ */
+.page {
+  position:absolute; inset:0; background:var(--bg1);
+  display:flex; flex-direction:column;
+  opacity:0; transform:translateX(100%);
+  transition:opacity .3s ease, transform .3s cubic-bezier(.4,0,.2,1);
+  pointer-events:none; overflow:hidden;
+}
+.page.active { opacity:1; transform:translateX(0); pointer-events:all; }
+.page.out    { opacity:0; transform:translateX(-28%); pointer-events:none; }
+
+.pscroll { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+.pscroll::-webkit-scrollbar { display:none; }
+.ppad { padding:18px 20px; }
+
+/* ═══════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════ */
+
+/* Page header */
+.ph { background:var(--bg2); padding:16px 22px 14px; border-bottom:.5px solid var(--line); flex-shrink:0; }
+.ph-row { display:flex; align-items:center; gap:12px; }
+.ph-back { font-size:28px; color:var(--gold); cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; flex-shrink:0; line-height:1; }
+.ph h2 { font-family:var(--serif); font-size:19px; color:var(--gold); letter-spacing:3px; }
+.ph p  { font-size:11px; color:var(--dim); letter-spacing:1.5px; margin-top:3px; }
+
+/* Section label */
+.sl { font-size:11px; color:var(--lo); letter-spacing:3px; margin:18px 0 8px; padding-bottom:6px; border-bottom:.5px solid var(--line); }
+.sl:first-child { margin-top:2px; }
+
+/* Field group */
+.fg { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:12px; }
+.fr { padding:13px 16px; border-bottom:.5px solid var(--bg4); display:flex; flex-direction:column; gap:5px; }
+.fr:last-child { border-bottom:none; }
+.fl { font-size:11px; color:var(--dim); letter-spacing:2px; display:flex; align-items:center; gap:5px; }
+.req-dot { width:5px; height:5px; border-radius:50%; background:var(--gold-d); flex-shrink:0; }
+.fv { font-size:17px; color:var(--mid); background:transparent; width:100%; padding:0; }
+.fv:focus { color:var(--gold); }
+.fhint { font-size:11px; color:var(--ghost); letter-spacing:1px; }
+
+/* Buttons */
+.btn-primary {
+  width:100%; border-radius:var(--r); padding:16px;
+  font-family:var(--serif); font-size:18px; font-weight:700; color:var(--bg0);
+  letter-spacing:4px;
+  background:linear-gradient(135deg,var(--gold-d) 0%,var(--gold) 50%,var(--gold-d) 100%);
+  position:relative; overflow:hidden; transition:opacity .2s, transform .15s;
+}
+.btn-primary:active { opacity:.85; transform:scale(.98); }
+.btn-primary::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  transform:translateX(-100%); animation:shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer { 60%,100%{transform:translateX(100%)} }
+
+.btn-ghost {
+  width:100%; background:transparent; border:.5px solid var(--line2);
+  border-radius:var(--r); padding:14px; font-size:15px; color:var(--lo);
+  letter-spacing:2px; margin-top:10px; transition:border-color .2s, color .2s;
+}
+.btn-ghost:active { border-color:var(--gold-dim); color:var(--mid); }
+
+/* Doc row */
+.doc-row {
+  background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r);
+  padding:14px 16px; display:flex; align-items:center; gap:12px;
+  cursor:pointer; margin-bottom:10px; transition:border-color .2s;
+}
+.doc-row:active { border-color:var(--gold-dim); }
+.doc-ico { font-size:24px; flex-shrink:0; color:var(--lo); }
+.doc-txt h4 { font-size:15px; color:var(--mid); letter-spacing:1px; margin-bottom:3px; }
+.doc-txt p  { font-size:11px; color:var(--dim); }
+.doc-arr { font-size:20px; color:var(--ghost); margin-left:auto; }
+.doc-row.done { border-color:var(--gold-d); }
+.doc-row.done .doc-ico, .doc-row.done h4 { color:var(--gold); }
+
+/* Bottom nav */
+.bnav { background:var(--bg2); border-top:.5px solid var(--line); display:flex; padding:8px 0 2px; flex-shrink:0; }
+.ni { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:6px 2px; color:var(--ghost); font-size:10px; letter-spacing:.5px; transition:color .2s; }
+.ni.on { color:var(--gold); }
+.ni-ico { font-size:22px; }
+.ni-dot { width:4px; height:4px; border-radius:50%; background:var(--gold); opacity:0; }
+.ni.on .ni-dot { opacity:1; }
+
+/* Save footer */
+.sfooter { padding:14px 20px; background:var(--bg2); border-top:.5px solid var(--line); flex-shrink:0; }
+
+/* Stat grid */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.stat-card { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); padding:14px; }
+.stat-card .sv { font-size:24px; font-weight:700; color:var(--gold); font-family:var(--serif); margin-bottom:4px; }
+.stat-card .sl2 { font-size:11px; color:var(--dim); letter-spacing:1px; }
+.stat-card .ss { font-size:11px; color:var(--mid); margin-top:2px; }
+
+/* Sub-tabs */
+.ptabs { display:flex; background:var(--bg2); border-bottom:.5px solid var(--line); flex-shrink:0; }
+.ptab { flex:1; padding:12px 4px; text-align:center; font-size:13px; color:var(--dim); cursor:pointer; border-bottom:2px solid transparent; letter-spacing:1px; transition:color .2s, border-color .2s; }
+.ptab.on { color:var(--gold); border-bottom-color:var(--gold); }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:10px; font-size:10px; letter-spacing:1px; }
+.bg-gold  { background:var(--gold-bg); border:.5px solid var(--gold-d); color:var(--gold); }
+.bg-green { background:rgba(45,106,79,.2); border:.5px solid var(--green); color:var(--green-l); }
+.bg-red   { background:rgba(146,43,33,.2); border:.5px solid var(--red); color:var(--red-l); }
+
+/* Race list */
+.race-list { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:12px; }
+.race-item { padding:12px 15px; border-bottom:.5px solid var(--bg4); display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:center; }
+.race-item:last-child { border-bottom:none; }
+.rnk { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+.r1 { background:var(--gold-bg); border:.5px solid var(--gold); color:var(--gold); }
+.r2 { background:rgba(27,79,114,.3); border:.5px solid var(--blue); color:var(--blue-l); }
+.r3 { background:rgba(45,106,79,.3); border:.5px solid var(--green); color:var(--green-l); }
+.rn { background:var(--bg4); border:.5px solid var(--line2); color:var(--lo); }
+.ri h4 { font-size:13px; color:var(--mid); margin-bottom:2px; letter-spacing:1px; }
+.ri p  { font-size:11px; color:var(--dim); }
+.rd    { text-align:right; }
+.rd strong { display:block; font-size:14px; color:var(--gold); font-weight:600; }
+.rd span   { font-size:10px; color:var(--dim); }
+
+/* Health timeline */
+.tl { padding-left:22px; position:relative; margin-bottom:12px; }
+.tl-line { position:absolute; left:8px; top:6px; bottom:6px; width:.5px; background:var(--line2); }
+.tli { position:relative; padding-bottom:16px; }
+.tli:last-child { padding-bottom:0; }
+.tli-dot { position:absolute; left:-18px; top:5px; width:8px; height:8px; border-radius:50%; background:var(--gold-d); border:1.5px solid var(--gold); }
+.tli-date { font-size:10px; color:var(--ghost); letter-spacing:1px; margin-bottom:3px; }
+.tli h4 { font-size:13px; color:var(--mid); margin-bottom:3px; letter-spacing:1px; }
+.tli p  { font-size:12px; color:var(--dim); line-height:1.65; }
+
+/* Photo upload */
+.photo-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.photo-cell {
+  background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r);
+  padding:16px 12px; display:flex; flex-direction:column; align-items:center; gap:8px;
+  cursor:pointer; min-height:120px; transition:border-color .2s;
+}
+.photo-cell.has { border-color:var(--gold-d); background:var(--gold-bg); }
+.photo-cell:active { border-color:var(--gold-dim); }
+.eye-c { width:52px; height:52px; border-radius:50%; background:var(--bg4); border:1.5px solid var(--gold-d); display:flex; align-items:center; justify-content:center; font-size:26px; }
+.photo-cell .pl { font-size:12px; color:var(--dim); text-align:center; line-height:1.5; }
+.photo-cell .ps { font-size:10px; color:var(--ghost); }
+.photo-cell.has .pl { color:var(--mid); }
+.photo-cell.has .ps { color:var(--lo); }
+
+/* Consent */
+.cb-block { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:12px; }
+.cbi { padding:14px 16px; border-bottom:.5px solid var(--bg4); display:flex; gap:12px; align-items:flex-start; }
+.cbi:last-child { border-bottom:none; }
+.cbox { width:24px; height:24px; min-width:24px; border:.5px solid var(--line2); border-radius:5px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; transition:all .2s; color:transparent; }
+.cbox.on { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.ct { font-size:13px; color:var(--lo); line-height:1.75; flex:1; }
+.ct strong { color:var(--mid); font-weight:500; }
+.rtag { font-size:10px; color:var(--gold-d); margin-left:4px; }
+.otag { font-size:10px; color:var(--ghost); margin-left:4px; }
+
+/* Tx list */
+.tx-list { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:12px; }
+.tx-item { padding:13px 16px; border-bottom:.5px solid var(--bg4); display:flex; justify-content:space-between; align-items:center; }
+.tx-item:last-child { border-bottom:none; }
+.tx-l h4 { font-size:14px; color:var(--mid); margin-bottom:3px; }
+.tx-l p  { font-size:11px; color:var(--dim); }
+.tx-r { text-align:right; }
+.tx-amt  { font-size:15px; color:var(--gold); font-weight:600; }
+.tx-date { font-size:10px; color:var(--ghost); margin-top:2px; }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(16px);
+  background:var(--gold-bg); border:.5px solid var(--gold-d);
+  border-radius:20px; padding:10px 22px;
+  font-size:14px; color:var(--gold); letter-spacing:1px;
+  opacity:0; transition:opacity .3s, transform .3s;
+  pointer-events:none; z-index:9999; white-space:nowrap; max-width:320px;
+  text-align:center; word-break:break-all; white-space:normal;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════
+   PAGE 1 — LOGIN
+═══════════════════════════════════ */
+#pg-login {
+  background:var(--bg1);
+  opacity:1; transform:translateX(0); pointer-events:all;
+}
+.login-bg {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%,rgba(139,105,20,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 50% 90%,rgba(212,175,106,.04) 0%,transparent 60%);
+}
+.login-pat {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:repeating-linear-gradient(45deg,rgba(212,175,106,.03) 0,rgba(212,175,106,.03) 1px,transparent 0,transparent 50%);
+  background-size:24px 24px;
+}
+.login-content { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; padding:36px 28px 28px; height:100%; overflow-y:auto; }
+.login-content::-webkit-scrollbar { display:none; }
+
+.dove-logo { width:80px; height:80px; margin-bottom:18px; position:relative; flex-shrink:0; }
+.dove-ring { position:absolute; inset:0; border-radius:50%; border:.5px solid rgba(212,175,106,.25); }
+.dove-ring.r1 { animation:dspin 20s linear infinite; }
+.dove-ring.r2 { inset:8px; border-color:rgba(212,175,106,.15); animation:dspin 15s linear infinite reverse; }
+@keyframes dspin { to { transform:rotate(360deg); } }
+.dove-inner { position:absolute; inset:14px; border-radius:50%; background:radial-gradient(circle,rgba(139,105,20,.3) 0%,transparent 70%); display:flex; align-items:center; justify-content:center; font-size:32px; }
+
+.login-title   { font-family:var(--serif); font-size:28px; font-weight:700; color:var(--gold); letter-spacing:6px; text-align:center; margin-bottom:4px; }
+.login-sub     { font-size:12px; color:var(--dim); letter-spacing:3px; text-align:center; margin-bottom:3px; }
+.login-company { font-size:10px; color:var(--ghost); letter-spacing:2px; text-align:center; }
+.login-tagline { font-size:10px; color:var(--ghost); letter-spacing:2px; text-align:center; margin-bottom:4px; }
+.login-divider { width:80px; height:.5px; background:linear-gradient(90deg,transparent,var(--gold-d),transparent); margin:12px auto 24px; }
+.login-form { width:100%; }
+.lf-group { margin-bottom:14px; }
+.lf-label { font-size:11px; color:var(--dim); letter-spacing:2px; margin-bottom:7px; display:block; }
+.lf-input { width:100%; background:var(--bg2); border:.5px solid var(--line2); border-radius:8px; padding:15px 16px; color:var(--gold); font-size:17px; letter-spacing:1px; transition:border-color .2s; }
+.lf-input:focus { border-color:var(--gold); background:var(--bg3); }
+.login-forgot { text-align:center; font-size:13px; color:var(--ghost); cursor:pointer; margin-top:10px; letter-spacing:1px; }
+.bio-row { display:flex; gap:12px; margin-top:14px; }
+.bio-btn { flex:1; background:var(--bg2); border:.5px solid var(--line); border-radius:8px; padding:13px 8px; display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; color:var(--dim); font-size:10px; letter-spacing:1px; transition:border-color .2s; }
+.bio-btn:active { border-color:var(--gold-dim); }
+.bio-ico { font-size:26px; }
+.register-link { text-align:center; margin-top:22px; font-size:14px; color:var(--dim); }
+.register-link span { color:var(--gold); text-decoration:underline; cursor:pointer; }
+
+/* ═══════════════════════════════════
+   PAGE 2 — PRIVACY
+═══════════════════════════════════ */
+.priv-org { background:var(--bg3); border:.5px solid var(--line2); border-radius:8px; padding:14px; margin-bottom:16px; }
+.priv-org h3 { font-size:13px; color:var(--mid); margin-bottom:8px; letter-spacing:2px; }
+.priv-org p  { font-size:13px; color:var(--lo); line-height:1.75; }
+.priv-sec { margin-bottom:18px; }
+.priv-sec h3 { font-family:var(--serif); font-size:14px; color:var(--gold); margin-bottom:10px; padding-bottom:6px; border-bottom:.5px solid var(--line); letter-spacing:2px; }
+.priv-text { font-size:13px; color:var(--dim); line-height:1.85; margin-bottom:10px; }
+.priv-ul { list-style:none; }
+.priv-ul li { font-size:13px; color:var(--dim); padding:4px 0 4px 18px; position:relative; line-height:1.7; }
+.priv-ul li::before { content:'·'; position:absolute; left:0; color:var(--gold); font-size:20px; line-height:1.1; }
+.consent-footer { padding:14px 20px; background:var(--bg2); border-top:.5px solid var(--line); flex-shrink:0; }
+.consent-sum { font-size:12px; color:var(--dim); text-align:center; margin-bottom:12px; }
+.consent-sum span { color:var(--gold); font-weight:600; }
+
+/* ═══════════════════════════════════
+   PAGE 3 — MENU
+═══════════════════════════════════ */
+.menu-top { background:var(--bg2); padding:16px 22px 18px; border-bottom:.5px solid var(--line); flex-shrink:0; }
+.menu-greet { font-size:13px; color:var(--dim); letter-spacing:1px; margin-bottom:3px; }
+.menu-name  { font-family:var(--serif); font-size:22px; color:var(--gold); letter-spacing:2px; }
+.menu-date  { font-size:11px; color:var(--ghost); margin-top:2px; }
+.menu-mbadge { display:inline-block; background:var(--gold-bg); border:.5px solid var(--gold-d); border-radius:12px; padding:4px 12px; font-size:11px; color:var(--gold); margin-top:10px; letter-spacing:1px; }
+.menu-inner { padding:18px 20px; }
+.menu-banner { background:linear-gradient(135deg,var(--bg3) 0%,var(--gold-bg) 100%); border:.5px solid var(--line2); border-radius:var(--r); padding:16px 18px; margin-bottom:16px; position:relative; overflow:hidden; }
+.menu-banner::after { content:'🕊'; position:absolute; right:-8px; top:-8px; font-size:60px; opacity:.08; }
+.menu-banner h3 { font-family:var(--serif); font-size:15px; color:var(--gold); margin-bottom:5px; letter-spacing:2px; }
+.menu-banner p  { font-size:13px; color:var(--lo); line-height:1.6; }
+.voice-mega {
+  width:100%; background:linear-gradient(135deg,var(--gold-d) 0%,var(--gold) 60%,#C8A050 100%);
+  border-radius:var(--r); padding:18px 20px; display:flex; align-items:center; gap:14px;
+  cursor:pointer; margin-bottom:16px; position:relative; overflow:hidden;
+  transition:opacity .2s, transform .15s;
+}
+.voice-mega:active { opacity:.85; transform:scale(.98); }
+.voice-mega::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent); transform:translateX(-100%); animation:shimmer 3s ease-in-out infinite; }
+.vm-ico { width:52px; height:52px; border-radius:50%; background:rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+.vm-txt h3 { font-family:var(--serif); font-size:18px; color:var(--bg0); letter-spacing:2px; margin-bottom:3px; }
+.vm-txt p  { font-size:12px; color:rgba(8,6,2,.65); letter-spacing:1px; }
+.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mc { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); padding:16px 14px; cursor:pointer; transition:border-color .2s, background .2s; position:relative; overflow:hidden; }
+.mc:active { border-color:var(--gold-dim); background:var(--bg3); }
+.mc-ico { font-size:30px; margin-bottom:10px; }
+.mc h4  { font-size:15px; color:var(--mid); font-weight:500; margin-bottom:4px; letter-spacing:1px; }
+.mc p   { font-size:12px; color:var(--dim); line-height:1.5; }
+.mc-tag { position:absolute; top:10px; right:10px; background:var(--gold-bg); border:.5px solid var(--gold-d); border-radius:8px; padding:2px 8px; font-size:9px; color:var(--gold); letter-spacing:1px; }
+
+/* ═══════════════════════════════════
+   PAGE 4 — VOICE
+═══════════════════════════════════ */
+.lang-toggle { display:flex; border:.5px solid var(--line2); border-radius:8px; overflow:hidden; margin-bottom:24px; width:100%; }
+.lang-opt { flex:1; padding:12px; text-align:center; cursor:pointer; font-size:15px; color:var(--dim); transition:all .2s; letter-spacing:1px; }
+.lang-opt.on { background:var(--gold-bg); color:var(--gold); }
+.vv-wrap { display:flex; flex-direction:column; align-items:center; margin-bottom:24px; position:relative; height:230px; justify-content:center; cursor:pointer; }
+.vr { position:absolute; border-radius:50%; border:.5px solid var(--line2); pointer-events:none; }
+.vr1 { width:160px; height:160px; animation:pr 2s ease-in-out infinite; }
+.vr2 { width:190px; height:190px; animation:pr 2s ease-in-out infinite .4s; }
+.vr3 { width:220px; height:220px; animation:pr 2s ease-in-out infinite .8s; }
+@keyframes pr { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.7;transform:scale(1.02)} }
+.vr-c { width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg,var(--bg3),var(--gold-bg)); border:1px solid var(--gold-dim); display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; z-index:2; transition:border-color .2s, box-shadow .2s; }
+.vr-c.rec { border-color:var(--gold); box-shadow:0 0 20px rgba(212,175,106,.25); animation:rp 1s ease-in-out infinite; }
+@keyframes rp { 0%,100%{box-shadow:0 0 20px rgba(212,175,106,.2)} 50%{box-shadow:0 0 40px rgba(212,175,106,.4)} }
+.vr-mic { font-size:40px; }
+.vr-status { font-size:10px; color:var(--lo); letter-spacing:2px; margin-top:4px; }
+.voice-hint { font-size:14px; color:var(--dim); text-align:center; margin-bottom:20px; line-height:1.75; letter-spacing:1px; }
+.trans-box { width:100%; background:var(--bg2); border:.5px solid var(--line2); border-radius:8px; padding:14px; min-height:80px; margin-bottom:16px; }
+.trans-lbl  { font-size:10px; color:var(--ghost); letter-spacing:2px; margin-bottom:8px; }
+.trans-txt  { font-size:17px; color:var(--mid); line-height:1.7; }
+.v-actions  { display:flex; gap:10px; }
+.v-send { flex:2; background:linear-gradient(135deg,var(--gold-d),var(--gold)); border-radius:8px; padding:14px; color:var(--bg0); font-family:var(--serif); font-size:17px; font-weight:700; cursor:pointer; letter-spacing:2px; transition:opacity .2s; }
+.v-send:active { opacity:.85; }
+.v-clear { flex:1; background:var(--bg2); border:.5px solid var(--line2); border-radius:8px; padding:14px; color:var(--lo); font-size:14px; cursor:pointer; letter-spacing:1px; }
+
+/* ═══════════════════════════════════
+   PAGE 5 — MEMBER
+═══════════════════════════════════ */
+.mem-hero { background:var(--bg2); padding:18px 22px 20px; border-bottom:.5px solid var(--line); flex-shrink:0; }
+.avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--gold-d),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:28px; color:var(--bg0); font-weight:700; margin-bottom:12px; border:2px solid var(--gold-dim); }
+.mem-name  { font-family:var(--serif); font-size:22px; color:var(--gold); letter-spacing:2px; }
+.mem-email { font-size:12px; color:var(--dim); margin-top:3px; }
+.mem-tier  { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.plan-card { background:linear-gradient(135deg,var(--bg3) 0%,var(--gold-bg) 100%); border:.5px solid var(--gold-d); border-radius:var(--r); padding:18px; margin-bottom:14px; }
+.plan-card h3 { font-family:var(--serif); font-size:16px; color:var(--gold); margin-bottom:4px; letter-spacing:2px; }
+.plan-price { font-size:26px; color:var(--gold-l); font-weight:700; letter-spacing:1px; margin-bottom:12px; font-family:var(--serif); }
+.plan-price span { font-size:14px; color:var(--lo); font-weight:400; }
+.plan-feats { list-style:none; margin-bottom:16px; }
+.plan-feats li { font-size:14px; color:var(--lo); padding:4px 0 4px 20px; position:relative; }
+.plan-feats li::before { content:'✦'; position:absolute; left:0; color:var(--gold); font-size:10px; top:7px; }
+.menu-rows { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); overflow:hidden; margin-bottom:12px; }
+.mri { padding:15px 16px; border-bottom:.5px solid var(--bg4); display:flex; align-items:center; gap:12px; cursor:pointer; transition:background .15s; }
+.mri:last-child { border-bottom:none; }
+.mri:active { background:var(--bg3); }
+.mri-ico { font-size:22px; width:28px; text-align:center; }
+.mri-txt { flex:1; font-size:16px; color:var(--mid); letter-spacing:1px; }
+.mri-arr { font-size:20px; color:var(--ghost); }
+
+/* ═══════════════════════════════════
+   PAGE 6 — CHAT
+═══════════════════════════════════ */
+.chat-ph { background:var(--bg2); padding:14px 18px; border-bottom:.5px solid var(--line); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.ai-ava { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold-d),var(--gold)); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.chat-ph-txt h3 { font-family:var(--serif); font-size:16px; color:var(--gold); letter-spacing:2px; }
+.chat-ph-txt p  { font-size:11px; color:var(--dim); letter-spacing:1px; display:flex; align-items:center; gap:5px; }
+.on-dot { width:7px; height:7px; border-radius:50%; background:#2ecc71; flex-shrink:0; }
+.chat-body { flex:1; padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
+.chat-body::-webkit-scrollbar { display:none; }
+.cdate { text-align:center; font-size:10px; color:var(--ghost); letter-spacing:1px; margin:4px 0; }
+.bwa { display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+.bwu { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+.bub { max-width:82%; padding:13px 15px; border-radius:16px; font-size:16px; line-height:1.75; }
+.bai { background:var(--bg2); border:.5px solid var(--line); color:var(--mid); border-bottom-left-radius:4px; }
+.buu { background:var(--gold-bg); border:.5px solid var(--gold-dim); color:var(--gold); border-bottom-right-radius:4px; }
+.btime { font-size:10px; color:var(--ghost); }
+.chat-typing { align-self:flex-start; padding:12px 16px; background:var(--bg2); border:.5px solid var(--line); border-radius:16px; border-bottom-left-radius:4px; display:none; }
+.dots span { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--dim); margin:0 2px; animation:db 1.4s ease-in-out infinite; }
+.dots span:nth-child(2) { animation-delay:.2s; }
+.dots span:nth-child(3) { animation-delay:.4s; }
+@keyframes db { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+.chat-bar { background:var(--bg2); border-top:.5px solid var(--line); padding:12px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.chat-inp { flex:1; background:var(--bg1); border:.5px solid var(--line2); border-radius:22px; padding:12px 16px; color:var(--mid); font-size:16px; }
+.chat-inp:focus { border-color:var(--gold-dim); }
+.c-mic  { width:42px; height:42px; border-radius:50%; background:var(--bg3); border:.5px solid var(--line2); display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; flex-shrink:0; }
+.c-send { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--gold-d),var(--gold)); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; flex-shrink:0; transition:opacity .2s; }
+.c-send:active { opacity:.8; }
+
+/* ═══════════════════════════════════
+   PAGE 7 — PIGEON OVERVIEW
+═══════════════════════════════════ */
+.pig-hero { background:var(--bg2); border:.5px solid var(--line2); border-radius:var(--r); padding:16px 18px; margin-bottom:14px; display:flex; align-items:center; gap:14px; }
+.pig-ava { width:56px; height:56px; border-radius:50%; background:var(--bg4); border:1.5px solid var(--gold-d); display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; }
+.pig-meta h3 { font-family:var(--serif); font-size:18px; color:var(--gold); letter-spacing:2px; margin-bottom:3px; }
+.pig-meta p  { font-size:11px; color:var(--lo); letter-spacing:1px; }
+.pig-meta .bs { display:flex; gap:6px; margin-top:7px; flex-wrap:wrap; }
+.fam-list { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.fam-card { background:var(--bg2); border:.5px solid var(--line); border-radius:var(--r); padding:16px 18px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:border-color .2s; }
+.fam-card:active { border-color:var(--gold-dim); }
+.fam-ico { font-size:30px; }
+.fam-txt h4 { font-size:16px; color:var(--mid); letter-spacing:1px; margin-bottom:3px; }
+.fam-txt p  { font-size:12px; color:var(--dim); }
+.fam-arr { font-size:22px; color:var(--ghost); margin-left:auto; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="notch"><div class="nc"></div><div class="ns"></div><div class="nc"></div></div>
+  <div class="sbar">
+    <span class="sbar-time" id="clock">09:41</span>
+    <div class="sbar-icons"><span>⚡</span><span>WiFi</span><span>5G</span></div>
+  </div>
+  <div class="screen">
+    <div class="gold-strip"></div>
+
+    <!-- ════════════════
+         P1: LOGIN
+    ════════════════ -->
+    <div class="page" id="pg-login">
+      <div class="login-bg"></div><div class="login-pat"></div>
+      <div class="login-content">
+        <div class="dove-logo">
+          <div class="dove-ring r1"></div><div class="dove-ring r2"></div>
+          <div class="dove-inner">🕊</div>
+        </div>
+        <div class="login-title">和平鴿</div>
+        <div class="login-sub">智慧體系統</div>
+        <div class="login-company">PEACE DOVE INTELLIGENCE</div>
+        <div class="login-tagline">乾記食品有限公司 · 尊榮服務</div>
+        <div class="login-divider"></div>
+        <div class="login-form">
+          <div class="lf-group">
+            <label class="lf-label">帳號 / 電子信箱</label>
+            <input class="lf-input" type="text" placeholder="請輸入您的帳號">
+          </div>
+          <div class="lf-group">
+            <label class="lf-label">密碼</label>
+            <input class="lf-input" type="password" placeholder="請輸入密碼">
+          </div>
+          <button class="btn-primary" onclick="App.go('pg-menu')">登　　入</button>
+          <div class="login-forgot" onclick="App.toast('重設密碼連結已寄至您的信箱')">忘記密碼？</div>
+          <div class="bio-row">
+            <div class="bio-btn" onclick="App.go('pg-menu')"><span class="bio-ico">👁</span>Face ID</div>
+            <div class="bio-btn" onclick="App.go('pg-menu')"><span class="bio-ico">☝️</span>指紋辨識</div>
+          </div>
+        </div>
+        <div class="register-link">尚未成為會員？<span onclick="App.go('pg-privacy')">立即加入</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P2: PRIVACY
+    ════════════════ -->
+    <div class="page" id="pg-privacy">
+      <div class="ph"><div class="ph-row"><div class="ph-back" onclick="App.back()">‹</div><div><h2>加入會員</h2><p>個人資料保護告知事項</p></div></div></div>
+      <div class="pscroll ppad">
+        <div class="priv-org"><h3>📋 資料管理機構</h3><p>乾記食品有限公司（統一編號：XXXXXXXX）<br>地址：台灣〔縣市〕〔地址〕<br>客服：service@qianji.com.tw<br>個資窗口：privacy@qianji.com.tw</p></div>
+        <div class="priv-sec"><h3>一、蒐集目的</h3><p class="priv-text">依個人資料保護法第8條，本公司基於下列目的蒐集您的個人資料：</p><ul class="priv-ul"><li>提供「和平鴿智慧體」APP會員服務（特定目的第069號）</li><li>會員身分識別與帳戶安全驗證</li><li>APP使用記錄分析與服務品質改善</li><li>依法律義務進行稽核及通報</li><li>商業行銷及新功能通知（需另行同意）</li></ul></div>
+        <div class="priv-sec"><h3>二、蒐集資料類別</h3><ul class="priv-ul"><li>識別類：姓名、帳號、身分證字號、電子信箱、手機號碼</li><li>財務類：付費訂閱記錄（由App Store/Play Store代管）</li><li>行為類：APP使用記錄、語音互動紀錄（加密儲存）</li><li>設備類：裝置型號、作業系統版本、IP位址</li><li>鴿禽類：賽鴿家族血統資料、競賽與健康記錄</li></ul></div>
+        <div class="priv-sec"><h3>三、資料使用期間及地區</h3><p class="priv-text">資料保存期間為會員有效期間及終止後5年。資料處理地區為中華民國台灣境內，雲端備份使用符合個資法之境外伺服器並簽署標準契約條款。</p></div>
+        <div class="priv-sec"><h3>四、您的權利（個資法第3條）</h3><ul class="priv-ul"><li>查詢或請求閱覽您的個人資料</li><li>請求製給複製本</li><li>請求補充或更正個人資料</li><li>請求停止蒐集、處理或利用</li><li>請求刪除個人資料</li></ul><p class="priv-text" style="margin-top:8px">行使權利請聯繫：privacy@qianji.com.tw，本公司將於15個工作日內回覆。</p></div>
+        <div class="priv-sec">
+          <h3>五、同意事項</h3>
+          <div class="cb-block">
+            <div class="cbi"><div class="cbox on" id="cb1" onclick="App.toggleCb('cb1',true)">✓</div><div class="ct"><strong>【必填】基本會員服務</strong><span class="rtag">必填</span><br>同意本公司蒐集、處理及利用識別資料，用於帳號建立、身分驗證及會員服務提供。</div></div>
+            <div class="cbi"><div class="cbox on" id="cb2" onclick="App.toggleCb('cb2',true)">✓</div><div class="ct"><strong>【必填】服務紀錄與安全維護</strong><span class="rtag">必填</span><br>同意蒐集APP使用記錄及設備資訊，用於服務安全維護及問題排查。</div></div>
+            <div class="cbi"><div class="cbox on" id="cb3" onclick="App.toggleCb('cb3',true)">✓</div><div class="ct"><strong>【必填】語音資料處理</strong><span class="rtag">必填</span><br>同意於語音辨識功能使用期間暫時處理語音資料，完成後即刪除，不作永久儲存。</div></div>
+            <div class="cbi"><div class="cbox" id="cb4" onclick="App.toggleCb('cb4',false)"></div><div class="ct"><strong>【選填】行銷資訊接收</strong><span class="otag">選填</span><br>同意接收最新功能更新、優惠方案及相關服務通知（可隨時取消）。</div></div>
+            <div class="cbi"><div class="cbox" id="cb5" onclick="App.toggleCb('cb5',false)"></div><div class="ct"><strong>【選填】服務改善研究</strong><span class="otag">選填</span><br>同意使用匿名化使用行為資料，用於AI功能優化及服務品質研究。</div></div>
+          </div>
+        </div>
+        <div class="priv-sec"><h3>六、資料安全聲明</h3><p class="priv-text">本公司採用AES-256加密及TLS 1.3傳輸加密，符合OWASP MASVS Level 2標準，定期進行資安稽核。隱私政策修訂時將提前30日公告通知。</p></div>
+        <div style="height:10px"></div>
+      </div>
+      <div class="consent-footer">
+        <div class="consent-sum">已勾選必填項 <span id="cb-count">3</span> / 3 項</div>
+        <button class="btn-primary" onclick="App.go('pg-menu')">確認同意，完成加入</button>
+        <button class="btn-ghost" onclick="App.back()">返回登入</button>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P3: MENU
+    ════════════════ -->
+    <div class="page" id="pg-menu">
+      <div class="menu-top">
+        <div class="menu-greet">歡迎回來，</div>
+        <div class="menu-name">陳惠珍 女士</div>
+        <div class="menu-date" id="today-date">2026年6月14日</div>
+        <div class="menu-mbadge">✦ 黃金會員</div>
+      </div>
+      <div class="pscroll">
+        <div class="menu-inner">
+          <div class="menu-banner"><h3>今日推薦</h3><p>您的智慧助理已就緒，可使用語音或文字方式開始諮詢服務。</p></div>
+          <button class="voice-mega" onclick="App.go('pg-voice')">
+            <div class="vm-ico">🎤</div>
+            <div class="vm-txt"><h3>語音智慧助理</h3><p>支援普通話 · 閩南語</p></div>
+          </button>
+          <div class="menu-grid">
+            <div class="mc" onclick="App.go('pg-chat')"><div class="mc-ico">🤖</div><h4>智慧對話</h4><p>文字諮詢服務</p></div>
+            <div class="mc" onclick="App.go('pg-member')"><div class="mc-ico">👤</div><h4>會員中心</h4><p>資料與訂閱</p><div class="mc-tag">黃金版</div></div>
+            <div class="mc" onclick="App.go('pg-pigeons')"><div class="mc-ico">🕊</div><h4>鴿子資料庫</h4><p>家族血統管理</p></div>
+            <div class="mc" onclick="App.toast('使用紀錄載入中…')"><div class="mc-ico">📊</div><h4>使用紀錄</h4><p>歷史對話查詢</p></div>
+            <div class="mc" onclick="App.toast('Canva商用素材庫連線中')"><div class="mc-ico">🎨</div><h4>Canva素材</h4><p>乾記品牌資源</p><div class="mc-tag">PRO</div></div>
+            <div class="mc" onclick="App.toast('系統設定')"><div class="mc-ico">⚙️</div><h4>系統設定</h4><p>偏好與隱私</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni on" onclick="App.go('pg-menu')"><div class="ni-dot"></div><div class="ni-ico">🏠</div><span>首頁</span></div>
+        <div class="ni" onclick="App.go('pg-voice')"><div class="ni-ico">🎤</div><span>語音</span></div>
+        <div class="ni" onclick="App.go('pg-chat')"><div class="ni-ico">💬</div><span>對話</span></div>
+        <div class="ni" onclick="App.go('pg-pigeons')"><div class="ni-ico">🕊</div><span>鴿資料庫</span></div>
+        <div class="ni" onclick="App.go('pg-member')"><div class="ni-ico">👤</div><span>會員</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P4: VOICE
+    ════════════════ -->
+    <div class="page" id="pg-voice">
+      <div class="ph"><div class="ph-row"><div class="ph-back" onclick="App.back()">‹</div><div><h2>語音智慧助理</h2><p>Google Cloud Speech-to-Text</p></div></div></div>
+      <div class="pscroll ppad">
+        <div class="lang-toggle">
+          <div class="lang-opt on" id="lz" onclick="App.lang('zh')">🇹🇼 普通話 zh-TW</div>
+          <div class="lang-opt" id="lt" onclick="App.lang('tw')">🟢 閩南語 nan-TW</div>
+        </div>
+        <div class="vv-wrap" onclick="App.toggleRec()">
+          <div class="vr vr3"></div><div class="vr vr2"></div><div class="vr vr1"></div>
+          <div class="vr-c" id="vr-c"><div class="vr-mic">🎤</div><div class="vr-status" id="vr-st">點擊開始</div></div>
+        </div>
+        <div class="voice-hint">請說話，系統將自動辨識<br>並轉換為文字內容</div>
+        <div class="trans-box">
+          <div class="trans-lbl">語音辨識結果</div>
+          <div class="trans-txt" id="trans">（等待語音輸入…）</div>
+        </div>
+        <div class="v-actions">
+          <button class="v-send" onclick="App.go('pg-chat')">送出詢問</button>
+          <button class="v-clear" onclick="App.clearTrans()">清除</button>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni" onclick="App.go('pg-menu')"><div class="ni-ico">🏠</div><span>首頁</span></div>
+        <div class="ni on"><div class="ni-dot"></div><div class="ni-ico">🎤</div><span>語音</span></div>
+        <div class="ni" onclick="App.go('pg-chat')"><div class="ni-ico">💬</div><span>對話</span></div>
+        <div class="ni" onclick="App.go('pg-pigeons')"><div class="ni-ico">🕊</div><span>鴿資料庫</span></div>
+        <div class="ni" onclick="App.go('pg-member')"><div class="ni-ico">👤</div><span>會員</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P5: MEMBER
+    ════════════════ -->
+    <div class="page" id="pg-member">
+      <div class="mem-hero">
+        <div class="avatar">惠</div>
+        <div class="mem-name">陳惠珍</div>
+        <div class="mem-email">huichen@example.com.tw</div>
+        <div class="mem-tier"><span class="badge bg-gold">✦ 黃金會員</span><span class="badge" style="background:var(--bg4);border:.5px solid var(--line2);color:var(--dim)">有效至 2026/12/31</span></div>
+      </div>
+      <div class="pscroll ppad">
+        <div class="sl">基本識別資料</div>
+        <div class="fg">
+          <div class="fr"><div class="fl"><span class="req-dot"></span>姓名</div><input class="fv" value="陳惠珍"></div>
+          <div class="fr"><div class="fl"><span class="req-dot"></span>身分證字號</div><input class="fv" value="A123456789" type="password"><div class="fhint">AES-256 加密儲存 · 僅供身分驗證</div></div>
+          <div class="fr"><div class="fl"><span class="req-dot"></span>出生年月日</div><input class="fv" value="民國 65 年 3 月 15 日"></div>
+        </div>
+        <div class="sl">聯繫資料</div>
+        <div class="fg">
+          <div class="fr"><div class="fl"><span class="req-dot"></span>聯繫電話</div><input class="fv" value="0912-345-678" type="tel"></div>
+          <div class="fr"><div class="fl"><span class="req-dot"></span>聯繫郵箱</div><input class="fv" value="huichen@example.com.tw" type="email"></div>
+        </div>
+        <div class="sl">付費與綁定</div>
+        <div class="doc-row done" onclick="App.toast('信用卡資料透過 App Store 安全管理')">
+          <div class="doc-ico">💳</div><div class="doc-txt"><h4>信用卡 / 線上付費卡</h4><p>Apple Pay 已綁定 · 末四碼 8823</p></div><div class="doc-arr">›</div>
+        </div>
+        <div class="fg">
+          <div class="fr"><div class="fl">訂閱方案</div><input class="fv" value="黃金會員 NT$299／月" readonly style="color:var(--gold)"></div>
+          <div class="fr"><div class="fl">下次扣款日</div><input class="fv" value="2026 年 7 月 1 日" readonly style="color:var(--lo)"></div>
+        </div>
+        <div class="sl">消費統計查詢</div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sv">NT$897</div><div class="sl2">累計消費金額</div></div>
+          <div class="stat-card"><div class="sv">3</div><div class="sl2">訂閱期數</div><div class="ss">連續訂閱中</div></div>
+          <div class="stat-card"><div class="sv">28</div><div class="sl2">使用天數</div></div>
+          <div class="stat-card"><div class="sv">142</div><div class="sl2">AI對話次數</div></div>
+        </div>
+        <div class="sl">消費明細</div>
+        <div class="tx-list">
+          <div class="tx-item"><div class="tx-l"><h4>黃金會員月費</h4><p>App Store 自動扣款</p></div><div class="tx-r"><div class="tx-amt">NT$299</div><div class="tx-date">2026/06/01</div></div></div>
+          <div class="tx-item"><div class="tx-l"><h4>黃金會員月費</h4><p>App Store 自動扣款</p></div><div class="tx-r"><div class="tx-amt">NT$299</div><div class="tx-date">2026/05/01</div></div></div>
+          <div class="tx-item"><div class="tx-l"><h4>首次訂閱方案</h4><p>App Store 首月</p></div><div class="tx-r"><div class="tx-amt">NT$299</div><div class="tx-date">2026/04/01</div></div></div>
+        </div>
+        <div class="sl">訂閱方案</div>
+        <div class="plan-card">
+          <h3>✦ 黃金版方案</h3>
+          <div class="plan-price">NT$ 299 <span>/ 月</span></div>
+          <ul class="plan-feats"><li>無限次語音助理（普通話 + 閩南語）</li><li>AI智慧對話無限次數</li><li>鴿子家族三層資料庫</li><li>Canva商用素材庫完整使用</li><li>AI虹膜智慧分析服務</li></ul>
+          <button class="btn-primary" onclick="App.toast('正在開啟 App Store 訂閱頁面…')">透過 App Store 續訂</button>
+        </div>
+        <div class="sl">帳號管理</div>
+        <div class="menu-rows">
+          <div class="mri" onclick="App.toast('個人資料編輯')"><span class="mri-ico">📝</span><span class="mri-txt">個人資料編輯</span><span class="mri-arr">›</span></div>
+          <div class="mri" onclick="App.toast('修改密碼')"><span class="mri-ico">🔒</span><span class="mri-txt">修改密碼</span><span class="mri-arr">›</span></div>
+          <div class="mri" onclick="App.go('pg-privacy')"><span class="mri-ico">🛡️</span><span class="mri-txt">個資同意管理</span><span class="mri-arr">›</span></div>
+          <div class="mri" onclick="App.toast('通知設定')"><span class="mri-ico">🔔</span><span class="mri-txt">通知設定</span><span class="mri-arr">›</span></div>
+          <div class="mri" onclick="App.toast('隱私政策')"><span class="mri-ico">📜</span><span class="mri-txt">隱私政策</span><span class="mri-arr">›</span></div>
+        </div>
+        <button class="btn-ghost" onclick="App.go('pg-login')">登出帳號</button>
+        <div style="height:20px"></div>
+      </div>
+      <div class="bnav">
+        <div class="ni" onclick="App.go('pg-menu')"><div class="ni-ico">🏠</div><span>首頁</span></div>
+        <div class="ni" onclick="App.go('pg-voice')"><div class="ni-ico">🎤</div><span>語音</span></div>
+        <div class="ni" onclick="App.go('pg-chat')"><div class="ni-ico">💬</div><span>對話</span></div>
+        <div class="ni" onclick="App.go('pg-pigeons')"><div class="ni-ico">🕊</div><span>鴿資料庫</span></div>
+        <div class="ni on"><div class="ni-dot"></div><div class="ni-ico">👤</div><span>會員</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P6: CHAT
+    ════════════════ -->
+    <div class="page" id="pg-chat">
+      <div class="chat-ph">
+        <div class="ph-back" onclick="App.back()">‹</div>
+        <div class="ai-ava">🕊</div>
+        <div class="chat-ph-txt"><h3>和平鴿助理 <span class="on-dot"></span></h3><p>Claude AI · 智慧諮詢</p></div>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="cdate">2026年6月14日</div>
+        <div class="bwa"><div class="bub bai">您好，惠珍女士！我是和平鴿智慧助理，很高興為您服務。請問今天有什麼我可以幫您的？</div><div class="btime">09:00</div></div>
+        <div class="bwu"><div class="bub buu">請問乾記食品的最新產品有哪些？</div><div class="btime">09:01</div></div>
+        <div class="bwa"><div class="bub bai">乾記食品目前主打系列：<br>✦ 特選醬料系列<br>✦ 傳統美食調料包<br>✦ 節慶禮盒組合<br><br>如需詳細介紹，我可查詢Canva品牌資料庫為您提供完整資訊。</div><div class="btime">09:01</div></div>
+        <div class="chat-typing" id="chat-typing"><div class="dots"><span></span><span></span><span></span></div></div>
+      </div>
+      <div class="chat-bar">
+        <div class="c-mic" onclick="App.go('pg-voice')">🎤</div>
+        <input class="chat-inp" id="chat-inp" placeholder="請輸入訊息…" onkeydown="if(event.key==='Enter')App.sendMsg()">
+        <div class="c-send" onclick="App.sendMsg()">➤</div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P7: PIGEON OVERVIEW
+    ════════════════ -->
+    <div class="page" id="pg-pigeons">
+      <div class="ph"><div class="ph-row"><div class="ph-back" onclick="App.back()">‹</div><div><h2>🕊 鴿子資料庫</h2><p>家族血統 · 賽事 · 健康 · 虹膜</p></div></div></div>
+      <div class="pscroll ppad">
+        <div class="pig-hero">
+          <div class="pig-ava">🕊</div>
+          <div class="pig-meta"><h3>和平一號</h3><p>TW-2024-00231 · 2024年3月出生</p><div class="bs"><span class="badge bg-gold">✦ 冠軍血統</span><span class="badge bg-green">健康正常</span></div></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sv">18</div><div class="sl2">總參賽場次</div></div>
+          <div class="stat-card"><div class="sv">3</div><div class="sl2">冠軍次數</div><div class="ss">前三名共7次</div></div>
+          <div class="stat-card"><div class="sv">850<span style="font-size:14px;color:var(--lo)">km</span></div><div class="sl2">最遠距離</div></div>
+          <div class="stat-card"><div class="sv">96%</div><div class="sl2">歸巢率</div></div>
+        </div>
+        <div class="sl">家族資料庫</div>
+        <div class="fam-list">
+          <div class="fam-card" onclick="App.go('pg-father')"><div class="fam-ico">🦅</div><div class="fam-txt"><h4>父親資料 B1</h4><p>血統書 · 賽事 · 健康史 · 虹膜圖</p></div><div class="fam-arr">›</div></div>
+          <div class="fam-card" onclick="App.go('pg-mother')"><div class="fam-ico">🐦</div><div class="fam-txt"><h4>母親資料 B2</h4><p>血統書 · 賽事 · 健康史 · 虹膜圖</p></div><div class="fam-arr">›</div></div>
+          <div class="fam-card" onclick="App.go('pg-self')"><div class="fam-ico">🕊</div><div class="fam-txt"><h4>本鴿資料 B3</h4><p>完整個人檔案 · 已建立</p></div><div class="fam-arr">›</div></div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni" onclick="App.go('pg-menu')"><div class="ni-ico">🏠</div><span>首頁</span></div>
+        <div class="ni" onclick="App.go('pg-voice')"><div class="ni-ico">🎤</div><span>語音</span></div>
+        <div class="ni" onclick="App.go('pg-chat')"><div class="ni-ico">💬</div><span>對話</span></div>
+        <div class="ni on"><div class="ni-dot"></div><div class="ni-ico">🕊</div><span>鴿資料庫</span></div>
+        <div class="ni" onclick="App.go('pg-member')"><div class="ni-ico">👤</div><span>會員</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════════
+         P8-10: PIGEON DETAIL (shared template via JS)
+    ════════════════ -->
+    <div class="page" id="pg-father"></div>
+    <div class="page" id="pg-mother"></div>
+    <div class="page" id="pg-self"></div>
+
+  </div><!-- /screen -->
+  <div class="home-ind"></div>
+</div><!-- /device -->
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// APP ENGINE
+// ═══════════════════════════════════════════════════
+const App = (() => {
+  let current = 'pg-login';
+  let history = [];
+  let recActive = false;
+  let curLang = 'zh';
+  let toastTimer;
+
+  const samples = {
+    zh: ['請問您們的服務時間是幾點到幾點？','我想了解黃金會員的優惠內容','幫我查詢最新的鴿子血統資訊','請問如何更新我的個人資料？'],
+    tw: ['我欲知影和平鴿智慧體有啥咪功能？','請問如何建立鴿仔的資料庫？','幫我揣父鴿的競賽歷史紀錄','我的鴿仔健康情形按怎？']
+  };
+  const aiReplies = [
+    '感謝您的詢問！我正在查詢相關資訊，請稍候。',
+    '根據乾記食品的品牌資料庫，以下是相關產品介紹……',
+    '好的，我已了解您的需求，以您的黃金會員等級，為您提供專屬服務。',
+    '根據您鴿子的健康記錄，建議您考慮以下護理方案……',
+    '您的賽鴿「和平一號」最近成績優異，恭喜！如需更多分析請繼續詢問。'
+  ];
+
+  // ─── Navigation ───────────────────────────────────
+  function go(id) {
+    if (id === current) return;
+    const from = document.getElementById(current);
+    const to   = document.getElementById(id);
+    if (!to) return;
+
+    // Build pigeon detail pages dynamically
+    if (['pg-father','pg-mother','pg-self'].includes(id) && !to.dataset.built) {
+      buildPigeonPage(id);
+      to.dataset.built = '1';
+    }
+
+    from.classList.add('out');
+    from.classList.remove('active');
+    to.style.cssText = 'transform:translateX(100%);opacity:0;';
+    to.classList.add('active');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      to.style.cssText = 'transform:translateX(0);opacity:1;transition:opacity .3s ease,transform .3s cubic-bezier(.4,0,.2,1);';
+    }));
+    history.push(current);
+    current = id;
+    setTimeout(() => { from.classList.remove('out'); from.style.cssText = ''; }, 350);
+  }
+
+  function back() {
+    if (!history.length) return;
+    const prev = history.pop();
+    const from = document.getElementById(current);
+    const to   = document.getElementById(prev);
+    from.style.cssText = 'transform:translateX(100%);opacity:0;transition:opacity .28s ease,transform .28s cubic-bezier(.4,0,.2,1);pointer-events:none;';
+    to.classList.add('active');
+    to.style.cssText = 'transform:translateX(-28%);opacity:0;';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      to.style.cssText = 'transform:translateX(0);opacity:1;transition:opacity .28s ease,transform .28s cubic-bezier(.4,0,.2,1);';
+    }));
+    setTimeout(() => {
+      from.classList.remove('active');
+      from.style.cssText = '';
+      to.style.cssText = '';
+    }, 320);
+    current = prev;
+  }
+
+  // ─── Consent ─────────────────────────────────────
+  function toggleCb(id, required) {
+    const el = document.getElementById(id);
+    if (required && el.classList.contains('on')) { toast('此為必填項目，無法取消'); return; }
+    el.classList.toggle('on');
+    el.textContent = el.classList.contains('on') ? '✓' : '';
+    document.getElementById('cb-count').textContent =
+      ['cb1','cb2','cb3'].filter(x => document.getElementById(x).classList.contains('on')).length;
+  }
+
+  // ─── Voice ───────────────────────────────────────
+  function setLang(l) {
+    curLang = l;
+    document.getElementById('lz').classList.toggle('on', l === 'zh');
+    document.getElementById('lt').classList.toggle('on', l === 'tw');
+  }
+
+  function toggleRec() {
+    if (recActive) return;
+    recActive = true;
+    const c = document.getElementById('vr-c');
+    const s = document.getElementById('vr-st');
+    c.classList.add('rec'); s.textContent = '聆聽中…';
+    setTimeout(() => {
+      const arr = samples[curLang];
+      document.getElementById('trans').textContent = arr[Math.floor(Math.random() * arr.length)];
+      c.classList.remove('rec'); s.textContent = '辨識完成';
+      recActive = false;
+      setTimeout(() => { s.textContent = '點擊開始'; }, 2000);
+    }, 2300);
+  }
+
+  function clearTrans() {
+    document.getElementById('trans').textContent = '（等待語音輸入…）';
+    document.getElementById('vr-st').textContent = '點擊開始';
+  }
+
+  // ─── Chat ────────────────────────────────────────
+  function sendMsg() {
+    const inp = document.getElementById('chat-inp');
+    const val = inp.value.trim();
+    if (!val) return;
+    const body = document.getElementById('chat-body');
+    const typing = document.getElementById('chat-typing');
+    const now = new Date();
+    const t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    const u = document.createElement('div');
+    u.className = 'bwu';
+    u.innerHTML = '<div class="bub buu">' + val.replace(/</g,'&lt;') + '</div><div class="btime">' + t + '</div>';
+    body.insertBefore(u, typing);
+    inp.value = '';
+    typing.style.display = 'block';
+    body.scrollTop = 99999;
+    setTimeout(() => {
+      typing.style.display = 'none';
+      const a = document.createElement('div');
+      a.className = 'bwa';
+      a.innerHTML = '<div class="bub bai">' + aiReplies[Math.floor(Math.random() * aiReplies.length)] + '</div><div class="btime">' + t + '</div>';
+      body.insertBefore(a, typing);
+      body.scrollTop = 99999;
+    }, 1800);
+  }
+
+  // ─── Toast ───────────────────────────────────────
+  function toast(msg) {
+    const el = document.getElementById('toast-el');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  // ─── Pigeon page builder ──────────────────────────
+  const pigeonData = {
+    'pg-father': {
+      title: '父親資料 B1', sub: '種鴿父系血統完整記錄',
+      name: '金牌先鋒', ring: 'TW-2019-88821', color: '深雨點', sex: '雄',
+      owner: '王建明', phone: '0933-456-789', area: '台中市 大雅區',
+      pedigreeUploaded: true,
+      races: [
+        {rank:1,cls:'r1',name:'台北聯合賽',info:'2023年10月 · 南投放飛',dist:'520km',pos:'速比第一'},
+        {rank:2,cls:'r2',name:'全國秋季賽',info:'2023年9月 · 嘉義放飛',dist:'380km',pos:'速比第二'},
+        {rank:1,cls:'r1',name:'地區春季賽',info:'2022年4月 · 台中放飛',dist:'210km',pos:'速比第一'},
+        {rank:8,cls:'rn',name:'全國超距賽',info:'2022年3月 · 高雄放飛',dist:'850km',pos:'速比第八'}
+      ],
+      health: [
+        {date:'2026/02/10',title:'年度健康檢查',desc:'體重：450g · 翼展：68cm<br>沙門氏菌：陰性 · 球蟲：陰性'},
+        {date:'2025/10/05',title:'疫苗接種',desc:'新城疫 + 傳染性支氣管炎<br>下次接種：2026/04'},
+        {date:'2025/08/20',title:'換羽期護理',desc:'換羽正常，補充維他命B群'},
+        {date:'2025/03/12',title:'呼吸道輕微感染',desc:'用藥：強力黴素7天，已痊癒'}
+      ],
+      irisL: true, irisR: true, irisDate: '2024年3月15日', irisNote: '珍珠眼 · 瞳孔收縮優良', aiDone: true
+    },
+    'pg-mother': {
+      title: '母親資料 B2', sub: '種鴿母系血統完整記錄',
+      name: '銀鳳仙子', ring: 'TW-2020-33145', color: '灰白雨點', sex: '雌',
+      owner: '李淑芬', phone: '0922-123-456', area: '彰化縣 員林市',
+      pedigreeUploaded: false,
+      races: [
+        {rank:1,cls:'r1',name:'地區春季公棚賽',info:'2023年5月 · 苗栗放飛',dist:'320km',pos:'速比第一'},
+        {rank:3,cls:'r3',name:'台灣北區聯合賽',info:'2022年10月 · 桃園放飛',dist:'450km',pos:'速比第三'}
+      ],
+      health: [
+        {date:'2026/01/20',title:'年度健康檢查',desc:'體重：420g · 翼展：65cm<br>各項指標正常'},
+        {date:'2025/09/15',title:'疫苗接種',desc:'新城疫疫苗施打<br>下次接種：2026/03'},
+        {date:'2025/04/08',title:'孵蛋期護理',desc:'產卵2顆，孵化成功<br>補充鈣質及維他命D'}
+      ],
+      irisL: false, irisR: false, irisDate: '', irisNote: '', aiDone: false
+    },
+    'pg-self': {
+      title: '本鴿資料 B3', sub: '個人賽鴿完整建檔',
+      name: '和平一號', ring: 'TW-2024-00231', color: '深雨點', sex: '雄',
+      owner: '', phone: '', area: '',
+      pedigreeUploaded: true,
+      races: [
+        {rank:1,cls:'r1',name:'新北市聯合春賽',info:'2025年4月 · 彰化放飛',dist:'380km',pos:'速比第一'},
+        {rank:2,cls:'r2',name:'全國幼鴿錦標賽',info:'2024年10月 · 台南放飛',dist:'450km',pos:'速比第二'},
+        {rank:1,cls:'r1',name:'地區幼鴿春賽',info:'2024年5月 · 桃園放飛',dist:'210km',pos:'速比第一'}
+      ],
+      health: [
+        {date:'2026/05/10',title:'年度健康體檢',desc:'體重：480g · 翼展：70cm<br>血液檢查正常 · 糞便陰性'},
+        {date:'2026/03/01',title:'疫苗接種',desc:'新城疫 + 鴿痘二聯疫苗<br>下次接種：2026/09'},
+        {date:'2025/11/20',title:'換羽期管理',desc:'換羽順利，補充Omega-3'},
+        {date:'2025/07/05',title:'球蟲感染輕微',desc:'用藥：百球清5天，已痊癒'}
+      ],
+      irisL: true, irisR: true, irisDate: '2025年6月15日', irisNote: '珍珠眼 · 瞳孔反應靈敏', aiDone: true
+    }
+  };
+
+  function buildPigeonPage(id) {
+    const d = pigeonData[id];
+    const pg = document.getElementById(id);
+    const raceRows = d.races.map(r =>
+      '<div class="race-item"><div class="rnk ' + r.cls + '">' + r.rank + '</div><div class="ri"><h4>' + r.name + '</h4><p>' + r.info + '</p></div><div class="rd"><strong>' + r.dist + '</strong><span>' + r.pos + '</span></div></div>'
+    ).join('');
+    const hlRows = d.health.map(h =>
+      '<div class="tli"><div class="tli-dot"></div><div class="tli-date">' + h.date + '</div><h4>' + h.title + '</h4><p>' + h.desc + '</p></div>'
+    ).join('');
+    const iL = d.irisL ? 'has' : '';
+    const iR = d.irisR ? 'has' : '';
+    const iLtxt = d.irisL ? '已上傳' : '點擊拍照上傳';
+    const iRtxt = d.irisR ? '已上傳' : '點擊拍照上傳';
+    const showOwner = d.owner ? '<div class="fr"><div class="fl"><span class="req-dot"></span>飼主姓名</div><input class="fv" value="'+d.owner+'"></div><div class="fr"><div class="fl"><span class="req-dot"></span>飼主聯繫電話</div><input class="fv" value="'+d.phone+'" type="tel"></div><div class="fr"><div class="fl">飼主地區</div><input class="fv" value="'+d.area+'"></div>' : '';
+    const pTitle = id === 'pg-self' ? '儲存本鴿資料' : (id === 'pg-father' ? '儲存父親資料' : '儲存母親資料');
+    const saveMsg = id === 'pg-self' ? '本鴿資料已儲存' : (id === 'pg-father' ? '父親資料已儲存' : '母親資料已儲存');
+
+    pg.innerHTML = `
+      <div class="ph"><div class="ph-row"><div class="ph-back" onclick="App.back()">‹</div><div><h2>${d.title}</h2><p>${d.sub}</p></div></div></div>
+      <div class="ptabs" id="tabs-${id}">
+        <div class="ptab on" onclick="App.switchTab('${id}','basic')">基本</div>
+        <div class="ptab" onclick="App.switchTab('${id}','race')">賽事</div>
+        <div class="ptab" onclick="App.switchTab('${id}','health')">健康</div>
+        <div class="ptab" onclick="App.switchTab('${id}','iris')">虹膜</div>
+      </div>
+      <div class="pscroll ppad" id="${id}-basic">
+        <div class="sl">${id==='pg-self'?'本':''}鴿識別</div>
+        <div class="fg">
+          <div class="fr"><div class="fl"><span class="req-dot"></span>${id==='pg-self'?'鴿子姓名':(id==='pg-father'?'鴿子父親姓名':'鴿子母親姓名')}</div><input class="fv" value="${d.name}"></div>
+          <div class="fr"><div class="fl">足環號碼</div><input class="fv" value="${d.ring}"></div>
+          <div class="fr"><div class="fl">羽色</div><input class="fv" value="${d.color}"></div>
+          ${id==='pg-self'?'<div class="fr"><div class="fl">出生日期</div><input class="fv" value="2024年3月10日"></div>':''}
+          <div class="fr"><div class="fl">性別</div><input class="fv" value="${d.sex}" readonly style="color:var(--lo)"></div>
+        </div>
+        ${showOwner ? '<div class="sl">飼主資料</div><div class="fg">' + showOwner + '</div>' : ''}
+        <div class="sl">血統書</div>
+        <div class="doc-row ${d.pedigreeUploaded?'done':''}" onclick="App.toast('${d.pedigreeUploaded?'血統書已上傳，點擊查看':'請上傳血統書'}')">
+          <div class="doc-ico">📜</div>
+          <div class="doc-txt"><h4>${id==='pg-self'?'本鴿血統書':(id==='pg-father'?'鴿子父親血統書':'鴿子母親血統書')}</h4><p>${d.pedigreeUploaded?'PDF · 已上傳 · 點擊查看':'PDF / JPG · 點擊上傳'}</p></div>
+          <div class="doc-arr">${d.pedigreeUploaded?'›':'+'}</div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+      <div class="pscroll ppad" id="${id}-race" style="display:none">
+        <div class="sl">${id==='pg-self'?'本鴿':''}競賽歷史紀錄</div>
+        <div class="race-list">${raceRows}</div>
+        <div class="sl">新增賽事記錄</div>
+        <div class="fg">
+          <div class="fr"><div class="fl">比賽名稱</div><input class="fv" placeholder="請輸入賽事名稱"></div>
+          <div class="fr"><div class="fl">比賽日期</div><input class="fv" placeholder="YYYY 年 MM 月 DD 日"></div>
+          <div class="fr"><div class="fl">名次 / 總羽數</div><input class="fv" placeholder="例：第 1 名 / 共 500 羽"></div>
+          <div class="fr"><div class="fl">放飛距離（km）</div><input class="fv" placeholder="例：480" type="number"></div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+      <div class="pscroll ppad" id="${id}-health" style="display:none">
+        <div class="sl">健康史時間軸</div>
+        <div class="tl"><div class="tl-line"></div>${hlRows}</div>
+        <div class="sl">新增健康記錄</div>
+        <div class="fg">
+          <div class="fr"><div class="fl">日期</div><input class="fv" placeholder="YYYY 年 MM 月 DD 日"></div>
+          <div class="fr"><div class="fl">事項類別</div><input class="fv" placeholder="疫苗 / 疾病 / 健檢 / 護理"></div>
+          <div class="fr"><div class="fl">詳細說明</div><input class="fv" placeholder="請輸入健康紀錄詳情"></div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+      <div class="pscroll ppad" id="${id}-iris" style="display:none">
+        <div class="sl">虹膜圖像</div>
+        <div class="photo-grid">
+          <div class="photo-cell ${iL}" onclick="App.toast('${d.irisL?'左眼虹膜已上傳':'請拍攝左眼虹膜並上傳'}')">
+            <div class="eye-c">👁</div>
+            <div class="pl">${id==='pg-self'?'本鴿':(id==='pg-father'?'父親':'母親')}左眼<br>虹膜圖</div>
+            <div class="ps">${iLtxt}</div>
+          </div>
+          <div class="photo-cell ${iR}" onclick="App.toast('${d.irisR?'右眼虹膜已上傳':'請拍攝右眼虹膜並上傳'}')">
+            <div class="eye-c">👁</div>
+            <div class="pl">${id==='pg-self'?'本鴿':(id==='pg-father'?'父親':'母親')}右眼<br>虹膜圖</div>
+            <div class="ps">${iRtxt}</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="fr"><div class="fl">拍攝日期</div><input class="fv" value="${d.irisDate}" placeholder="YYYY 年 MM 月 DD 日"></div>
+          <div class="fr"><div class="fl">虹膜顏色特徵</div><input class="fv" value="${d.irisNote}" placeholder="顏色特徵 / 瞳孔反應"></div>
+          <div class="fr"><div class="fl">鑑定師評語</div><input class="fv" placeholder="請輸入虹膜鑑定評語"></div>
+        </div>
+        <div class="sl">AI虹膜智慧分析</div>
+        <div class="doc-row ${d.aiDone?'done':''}" onclick="App.toast('${d.aiDone?'分析結果：優良賽鴿特質，建議列為種鴿':'請先上傳虹膜圖再進行AI分析'}')">
+          <div class="doc-ico">🤖</div>
+          <div class="doc-txt"><h4>智慧虹膜特徵分析</h4><p>${d.aiDone?'已完成分析 · Claude AI · 點擊查看報告':'上傳虹膜圖後由 Claude AI 自動分析'}</p></div>
+          <div class="doc-arr">›</div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+      <div class="sfooter"><button class="btn-primary" onclick="App.toast('${saveMsg}')">${pTitle}</button></div>
+    `;
+  }
+
+  function switchTab(pgId, tab) {
+    ['basic','race','health','iris'].forEach(t => {
+      const el = document.getElementById(pgId + '-' + t);
+      if (el) el.style.display = t === tab ? 'block' : 'none';
+    });
+    const tabs = document.getElementById('tabs-' + pgId);
+    if (tabs) tabs.querySelectorAll('.ptab').forEach((pt, i) => {
+      pt.classList.toggle('on', ['basic','race','health','iris'][i] === tab);
+    });
+  }
+
+  // ─── Clock ─────────────────────────────────────────
+  function tick() {
+    const n = new Date();
+    const el = document.getElementById('clock');
+    if (el) el.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 30000);
+
+  // ─── Date ──────────────────────────────────────────
+  (() => {
+    const d = new Date(), days = ['日','一','二','三','四','五','六'];
+    const el = document.getElementById('today-date');
+    if (el) el.textContent = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日 · 星期' + days[d.getDay()];
+  })();
+
+  // ─── Set first page visible ─────────────────────────
+  document.getElementById('pg-login').classList.add('active');
+
+  return { go, back, toggleCb, lang: setLang, toggleRec, clearTrans, sendMsg, toast, switchTab };
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>`;
+
+fs.writeFileSync(OUTPUT, html, 'utf8');
+console.log('✅ Build complete:', OUTPUT);
+console.log('   File size:', (fs.statSync(OUTPUT).size / 1024).toFixed(1), 'KB');
